@@ -34,23 +34,38 @@ sys_yaw_discrete = c2d(sys_yaw,Ts);
 % Design MPC controller_x
 % Compute controlled invariant set
 % h = [0.035;0.035; 0; 0]; % [x, y, z, yaw]
-Hx = [0,1,0,0;
-      0 -1, 0 0];
-hx = [0.035;0.035];
-Gx = [1;-1];
-gx = [0.3;0.3]; 
-A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
-[nA, ~] = size(A);
-B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
-[~, nB] = size(B);
-[Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,A,B);
-[Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,A,B);
-
-% Design MPC controller
+% Hx = [0,1,0,0;
+%       0 -1, 0 0];
+% hx = [0.035;0.035];
+% Gx = [1;-1];
+% gx = [0.3;0.3]; 
+% A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
+% [nA, ~] = size(A);
+% B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
+% [~, nB] = size(B);
+% [Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,A,B);
+% [Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,A,B);
+%%
+% Design MPC controllers
 mpc.x = MPC_Control_x(sys_x, Ts);
+mpc.y = MPC_Control_y(sys_y, Ts);
+%%
+mpc.z = MPC_Control_z(sys_z, Ts);
+mpc.yaw = MPC_Control_yaw(sys_yaw, Ts);
 
-
-%mpc_x = MPC_Control_x(sys_x, Ts);
+%% Simulations (Linear)
 % Get control inputs with
-%ux = mpc_x.get_u(x)
+x0 = [0;0;0;2];
+simTime = 10;
+A = sys_x_discrete.A; B = sys_x_discrete.B;
+xNext = x0;
+xlist = [];
+for k = 1:simTime/Ts
+    ux = mpc.x.get_u(xNext);
+    xNext = A*xNext+B*ux;
+    xlist = [xlist,xNext];
+end
+plot(linspace(1,simTime,simTime/Ts),xlist(:,4))
+
+
 

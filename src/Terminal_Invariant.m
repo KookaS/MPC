@@ -1,6 +1,7 @@
 function [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B)
 
-
+[nA, ~] = size(A);
+[~,nB] = size(B);
 % Compute LQR controller
 K = dlqr(A,B,eye(nA),eye(nB));
 K = -K; % Note that matlab defines K as -K
@@ -14,13 +15,13 @@ i = 1;
 while 1 && i<20
     preW = Polyhedron(Hmod*Amod,hmod);
     Intersect = intersect(preW, W);
-    figure
-    hold on
-    W.projection(1:2).plot('color', 'y','alpha', 0.8);
-    preW.projection(1:2).plot('color','c','alpha', 0.2);
-    Intersect.projection(1:2).plot('color','r','alpha', 0.5);
-    axis square
-    hold off
+%     figure
+%     hold on
+%     W.projection(1:2).plot('color', 'y','alpha', 0.8);
+%     preW.projection(1:2).plot('color','c','alpha', 0.2);
+%     Intersect.projection(1:2).plot('color','r','alpha', 0.5);
+%     axis square
+%     hold off
     if Intersect == W
         break
     else

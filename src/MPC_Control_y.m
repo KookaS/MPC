@@ -52,7 +52,7 @@ classdef MPC_Control_y < MPC_Control
       for i = 1:N-1
       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
       con = [con, Hf*x(:,i)<=hf]; % State constraints
-      con = [con, G*u <= g]; % Input constraints => I think these are not necessary as this 
+      con = [con, G*u(i) <= g]; % Input constraints => I think these are not necessary as this 
                                  %is already included in the control invariant set
       obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
       end

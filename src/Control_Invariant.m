@@ -14,8 +14,8 @@ while 1 && i<10
     Intersect = intersect(preW, W);
     figure
     hold on
-     W.projection(1:2).plot('color', 'y','alpha', 0.9);
-     preW.projection(1:2).plot('color','c','alpha', 0.2);
+     W.projection(3:4).plot('color', 'y','alpha', 0.9);
+     preW.projection(3:4).plot('color','c','alpha', 0.2);
      %Intersect.projection(1:2).plot('color','r','alpha', 0.5);
     axis square
     hold off
