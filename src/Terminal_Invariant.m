@@ -1,22 +1,42 @@
-function [Hf,hf] = Invariant(H,h, Hv, hv,sys)
+function [Ht,ht] = Terminal_Invariant(H,h, G, g,sys)
 
 A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
 [nA, ~] = size(A);
 B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
 [~, nB] = size(B);
 
-% % Compute LQR controller
-% K = dlqr(A,B,eye(nA),eye(nB));
-% K = -K; % Note that matlab defines K as -K
-% Ak = A+B*K; % Closed-loop dynamics
-% 
-% display(H)
-% display(K)
-% display(Hv)
-% 
-% HH = [H;(Hv*K).'];
-% hh = [h;hv]; % State and input constraints
-% 
+% Compute LQR controller
+K = dlqr(A,B,eye(nA),eye(nB));
+K = -K; % Note that matlab defines K as -K
+Amod = A+B*K;
+Hmod = [H;G*K];
+hmod = [h;g];
+W = Polyhedron(Hmod,hmod);
+i = 1;
+
+%% Iterate to find invariant set
+while 1 && i<20
+    preW = Polyhedron(Hmod*Amod,hmod);
+    Intersect = intersect(preW, W);
+    figure
+    hold on
+    W.projection(1:2).plot('color', 'y','alpha', 0.8);
+    preW.projection(1:2).plot('color','c','alpha', 0.2);
+    Intersect.projection(1:2).plot('color','r','alpha', 0.5);
+    axis square
+    hold off
+    if Intersect == W
+        break
+    else
+        i = i+1
+        W = Intersect;
+        Hmod = W.A;
+        hmod = W.b;
+    end
+
+end
+Ht = Hmod;
+ht = hmod;
 % display(HH)
 % display(hh)
 % preW = polytope(HH,hh);
