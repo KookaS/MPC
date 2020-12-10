@@ -1,29 +1,22 @@
 # MPC
 EPFL project | Model Predictive Control
 
-## Generate SSH
-ssh-keygen
+## Git
 
-ssh-add
+### Generate SSH
+    ssh-keygen
 
-cat $HOME\.ssh\id_rsa.pub
+    ssh-add
+
+    cat $HOME\.ssh\id_rsa.pub
 copy stuff and paste it in Github -> Settings -> SSH and GPG keys -> New
 
-if problem check: https://medium.com/rkttu/set-up-ssh-key-and-git-integration-in-windows-10-native-way-c9b94952dd2c
-
-## git
-install git on windows: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/
-
-keep standard settings
-
-if problems check: https://stackoverflow.com/questions/4492979/git-is-not-recognized-as-an-internal-or-external-command
-
-## Init
+### Init
 in the folder you want to work on:
 
     git clone git@github.com:KookaS/MPC.git
 
-## Branches
+### Branches
 You need everytime you code that you are in an other branch than the main one, especially if you commit and push your code.
 
 I would suggest that before creating a new branch you pull the recent changes:
