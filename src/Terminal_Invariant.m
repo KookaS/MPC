@@ -1,9 +1,5 @@
-function [Ht,ht] = Terminal_Invariant(H,h, G, g,sys)
+function [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B)
 
-A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
-[nA, ~] = size(A);
-B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
-[~, nB] = size(B);
 
 % Compute LQR controller
 K = dlqr(A,B,eye(nA),eye(nB));

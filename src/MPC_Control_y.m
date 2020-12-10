@@ -20,7 +20,7 @@ classdef MPC_Control_y < MPC_Control
       us = sdpvar(m, 1);
       
       % SET THE HORIZON HERE
-      N = ...
+      N = 10;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -34,8 +34,30 @@ classdef MPC_Control_y < MPC_Control
       %       the DISCRETE-TIME MODEL of your system
 
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
+% Compute invariant sets
+    H = [0,1,0,0;
+    0 -1, 0 0];
+    h = [0.035;0.035];
+    G = [1;-1];
+    g = [0.3;0.3]; 
+    A = mpc.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
+    B = mpc.B;  % [vel_pitch      pitch      vel_x          x] * u1
+    [Hf,hf] = Control_Invariant(H,h,G,g,A,B);
+    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B);
+    % Compute (Choose) cost functions
+    Q = eye(4); R = eye(1); Qf = eye(4);
+      % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
+      for i = 1:N-1
+      con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
+      con = [con, Hf*x(:,i)<=hf]; % State constraints
+      con = [con, G*u <= g]; % Input constraints => I think these are not necessary as this 
+                                 %is already included in the control invariant set
+      obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
+      end
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+      obj = obj+x(:,N)'*Qf*x(:,N);
 
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

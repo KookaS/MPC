@@ -39,19 +39,16 @@ Hx = [0,1,0,0;
 hx = [0.035;0.035];
 Gx = [1;-1];
 gx = [0.3;0.3]; 
+A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
+[nA, ~] = size(A);
+B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
+[~, nB] = size(B);
+[Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,A,B);
+[Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,A,B);
 
+% Design MPC controller
+mpc.x = MPC_Control_x(sys_x, Ts);
 
-[Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,sys_x_discrete);
-%%
-[Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,sys_x_discrete);
-%%
-% hv = [0.3; 0.3; 0.3; 0.2]; % [F alpha beta gamma]
-% Hv = [-2/3 1; -1 1;...
-%  -1 1; -1 1];
-% hv = [0.3; 0.2; 0.3; 0.3];  % [Fup Flow MalphaUp MalphaLow]
-% Hv = [1; -1];
-%  
-% [Hxf,hxf] = Invariant(Hx,h, Hv, hv, sys_x_discrete);
 
 %mpc_x = MPC_Control_x(sys_x, Ts);
 % Get control inputs with

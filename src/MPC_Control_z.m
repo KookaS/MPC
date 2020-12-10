@@ -34,7 +34,7 @@ classdef MPC_Control_z < MPC_Control
       d_est = sdpvar(1);
 
       % SET THE HORIZON HERE
-      N = ...
+      N = 10;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -48,11 +48,21 @@ classdef MPC_Control_z < MPC_Control
       %       the DISCRETE-TIME MODEL of your system
 
       % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
+      % No state constraints for z
+      % Input constraints are
+      G = [1;-1]; g = [0.3;0.2];
+      % Compute (Choose) cost functions
+      Q = eye(4); R = eye(1); Qf = eye(4);
+      % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
+      for i = 1:N-1
+      con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
+      con = [con, G*u <= g]; % Input constraints 
+      obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
+      end
+      obj = obj+x(:,N)'*Qf*x(:,N);
 
-      
-      
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       

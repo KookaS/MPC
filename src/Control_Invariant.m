@@ -1,9 +1,5 @@
-function [Hf,hf] = Control_Invariant(H,h,G,g,sys)
+function [Hf,hf] = Control_Invariant(H,h,G,g,A,B)
 
-A = sys.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
-[nA, ~] = size(A);
-B = sys.B;  % [vel_pitch      pitch      vel_x          x] * u1
-[~, nB] = size(B);
 Hs = [H,zeros(2,1);
       zeros(2,4) G];
 hs = [h;g];
