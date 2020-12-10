@@ -1,7 +1,7 @@
-% load('src/handout/Quad.m')
 close all
 clear all
 clc
+%addpath('C:\Users\Olivier\Documents\EPFL 2020-2021\Model predictive control\casadi')
 import casadi.*
 % Test quad simulation: What does it do? Does it behave as expected?
 quad = Quad();
@@ -33,12 +33,20 @@ sys_yaw_discrete = c2d(sys_yaw,Ts);
 
 % Design MPC controller_x
 % Compute uncontrolled invariant set
-hx = [0.035;0.035]; 
-Hx = [0,1,0,0;
-     0,-1,0,0];
-[Hxf,hxf] = Invariant(Hx,hx,sys_x_discrete.A);
+h = [0.035;0.035; 0; 0]; % [x, y, z, yaw]
+Hx = [0 0; -1 1;...
+ 0 0; 0 0];
+     
+ 
+% hv = [0.3; 0.3; 0.3; 0.2]; % [F alpha beta gamma]
+% Hv = [-2/3 1; -1 1;...
+%  -1 1; -1 1];
+hv = [0.3; 0.2; 0.3; 0.3];  % [Fup Flow MalphaUp MalphaLow]
+Hv = [1; -1];
+ 
+[Hxf,hxf] = Invariant(Hx,h, Hv, hv, sys_x_discrete);
 
-mpc_x = MPC_Control_x(sys_x, Ts);
+%mpc_x = MPC_Control_x(sys_x, Ts);
 % Get control inputs with
-ux = mpc_x.get_u(x)
+%ux = mpc_x.get_u(x)
 
