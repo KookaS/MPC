@@ -34,7 +34,7 @@ classdef MPC_Control_z < MPC_Control
       d_est = sdpvar(1);
 
       % SET THE HORIZON HERE
-      N = 10;
+      N = 20;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -51,17 +51,33 @@ classdef MPC_Control_z < MPC_Control
       % No state constraints for z
       % Input constraints are
       G = [1;-1]; g = [0.3;0.2];
+      H = [0,0];
+      h = 0;
+      A = mpc.A; [nA, ~] = size(A);
+      B = mpc.B; [~, nB] = size(B);
+      [K,Qf] = dlqr(A,B,eye(nA),zeros(nB)); K = -K;
+      [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
       % Compute (Choose) cost functions
-      Q = eye(2); R = eye(1); Qf = eye(2);
+      Q = diag([0.5;10]); R = 0.1*eye(1); 
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
+      % Regulation to the origin
+%       for i = 1:N-1
+%       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
+%       con = [con, G*u(i) <= g]; % Input constraints 
+%       obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
+%       end
+%       obj = obj+x(:,N)'*Qf*x(:,N);
+%       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+      
+      % Reference tracking
       for i = 1:N-1
       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
       con = [con, G*u(i) <= g]; % Input constraints 
-      obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
+      obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      obj = obj+x(:,N)'*Qf*x(:,N);
+      obj = obj+x(:,N)'*Q*x(:,N);
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,8 +115,11 @@ classdef MPC_Control_z < MPC_Control
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
       con = [];
-      obj = 0;
-      
+      G = [1;-1]; g = [0.3;0.2];
+      con = [con,xs == mpc.A*xs+mpc.B*us];
+      con = [con,mpc.C*xs==ref];
+      con = [con,G*us<=g];
+      obj = us'*us;
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

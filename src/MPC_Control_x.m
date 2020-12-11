@@ -20,7 +20,7 @@ classdef MPC_Control_x < MPC_Control
       us = sdpvar(m, 1);
       
       % SET THE HORIZON HERE
-      N = 10;
+      N = 20;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -38,28 +38,38 @@ classdef MPC_Control_x < MPC_Control
     h = [0.035;0.035];
     G = [1;-1];
     g = [0.3;0.3]; 
-    A = mpc.A;  % [vel_pitch      pitch      vel_x          x] * [vel_pitch      pitch      vel_x          x]
-    B = mpc.B;  % [vel_pitch      pitch      vel_x          x] * u1
-    [Hf,hf] = Control_Invariant(H,h,G,g,A,B);
-    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B);
+    A = mpc.A; [nA, ~] = size(A);
+    B = mpc.B; [~, nB] = size(B);
+    [K,Qf] = dlqr(A,B,eye(nA),zeros(nB)); K = -K;
+    %[Hf,hf] = Control_Invariant(H,h,G,g,A,B); This is not needed (I'll
+    %explain tuesday) 
+    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
     % Compute (Choose) cost functions
-    Q = eye(4); R = eye(1); Qf = eye(4);
+    Q = diag([0.2;1;0.1;5]); R = 0.01*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
+      % Regulation to origin
+%       for i = 1:N-1
+%       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
+%       con = [con, H*x(:,i)<=h]; % State constraints
+%       con = [con, G*u(i) <= g]; % Input constraints
+%       obj = obj+(x(:,i))'*Q*(x(:,i))+(u(i))'*R*(u(i));
+%       end
+%       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+%       obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs);
+      
+      %Reference tracking 
       for i = 1:N-1
       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
-      con = [con, Hf*x(:,i)<=hf]; % State constraints
-      con = [con, G*u(i) <= g]; % Input constraints => I think these are not necessary as this 
-                                 %is already included in the control invariant set
-      obj = obj+x(:,i)'*Q*x(:,i)+u(i)'*R*u(i);
+      con = [con, H*x(:,i)<=h]; % State constraints
+      con = [con, G*u(i) <= g]; % Input constraints
+      obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
-      obj = obj+x(:,N)'*Qf*x(:,N);
+      con = [con,H*x(:,N)<=h]; % Terminal state constraints
+      obj = obj+(x(:,N)-xs)'*Q*(x(:,N)-xs);
       
-      
-
-      
+           
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       
@@ -87,12 +97,21 @@ classdef MPC_Control_x < MPC_Control
       
       % Reference position (Ignore this before Todo 3.2)
       ref = sdpvar;            
-            
+
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
+      H = [0,1,0,0;
+        0 -1, 0 0];
+        h = [0.035;0.035];
+        G = [1;-1];
+        g = [0.3;0.3]; 
       con = [];
-      obj = 0;
+      con = [con,xs == mpc.A*xs+mpc.B*us];
+      con = [con,mpc.C*xs==ref];
+      con = [con,H*xs<=h];
+      con = [con,G*us<=g];
+      obj = us'*us;
       
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
