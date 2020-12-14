@@ -33,27 +33,40 @@ sys_yaw_discrete = c2d(sys_yaw,Ts);
 %%
 % Design MPC controller_x
 % Compute controlled invariant set
-% h = [0.035;0.035; 0; 0]; % [x, y, z, yaw]
+h = [0.035;0.035; 0; 0]; % [x, y, z, yaw]
 Hx = [0,1,0,0;
       0 -1, 0 0];
 hx = [0.035;0.035];
 Gx = [1;-1];
 gx = [0.3;0.3]; 
-
-
-[Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,sys_x_discrete);
+A = sys_x_discrete.A;
+B = sys_x_discrete.B;
+%[Hxf,hxf] = Control_Invariant(Hx,hx,Gx,gx,A,B);
+[Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,A,B);
+hxf-Hxf*[0;0;0;1];
 %%
-[Hxt,hxt] = Terminal_Invariant(Hx,hx,Gx,gx,sys_x_discrete);
+% Design MPC controllers
+mpc.x = MPC_Control_x(sys_x, Ts);
+%mpc.y = MPC_Control_y(sys_y, Ts);
 %%
-% hv = [0.3; 0.3; 0.3; 0.2]; % [F alpha beta gamma]
-% Hv = [-2/3 1; -1 1;...
-%  -1 1; -1 1];
-% hv = [0.3; 0.2; 0.3; 0.3];  % [Fup Flow MalphaUp MalphaLow]
-% Hv = [1; -1];
-%  
-% [Hxf,hxf] = Invariant(Hx,h, Hv, hv, sys_x_discrete);
+mpc.z = MPC_Control_z(sys_z, Ts);
+mpc.yaw = MPC_Control_yaw(sys_yaw, Ts);
 
-%mpc_x = MPC_Control_x(sys_x, Ts);
+%% Simulations (Linear)
 % Get control inputs with
-%ux = mpc_x.get_u(x)
+x0 = [0;0;0;2];
+simTime = 10;
+A = sys_x_discrete.A; B = sys_x_discrete.B;
+xNext = x0;
+xlist = [];
+for k = 1:simTime/Ts
+    ux = mpc.x.get_u(xNext);
+    xNext = A*xNext+B*ux;
+    xlist = [xlist,xNext];
+end
+%%
+plot(linspace(1,simTime,simTime/Ts),xlist(4,:))
+
+
+length(linspace(1,simTime,simTime/Ts))
 
