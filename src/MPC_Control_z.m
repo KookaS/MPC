@@ -6,8 +6,9 @@ classdef MPC_Control_z < MPC_Control
   
   methods
     function mpc = MPC_Control_z(sys, Ts)
+      display('supposed to update here')
       mpc = mpc@MPC_Control(sys, Ts);
-      
+      display('supposed to update here')
       [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
     end
     
@@ -50,19 +51,19 @@ classdef MPC_Control_z < MPC_Control
       % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
       % No state constraints for z
       % Input constraints are
+      
       G = [1;-1]; g = [0.3;0.2];
       H = [0,0];
       h = 0;
-      A = mpc.A; [nA, ~] = size(A);
-      B = mpc.B; [~, nB] = size(B);
-      [K,Qf] = dlqr(A,B,eye(nA),zeros(nB)); K = -K;
-      [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
       % Compute (Choose) cost functions
       Q = diag([0.5;10]); R = 0.1*eye(1); 
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
-      % Regulation to the origin
+      
+      % Regulation to the origin for 3.2
+%       [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
+%       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
 %       for i = 1:N-1
 %       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
 %       con = [con, G*u(i) <= g]; % Input constraints 
@@ -71,14 +72,22 @@ classdef MPC_Control_z < MPC_Control
 %       obj = obj+x(:,N)'*Qf*x(:,N);
 %       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
       
-      % Reference tracking
-      for i = 1:N-1
-      con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
-      con = [con, G*u(i) <= g]; % Input constraints 
-      obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
-      end
-      obj = obj+x(:,N)'*Q*x(:,N);
+      % Reference tracking for 4.1
+%       for i = 1:N-1          
+%           con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
+%           con = [con, G*u(i) <= g]; % Input constraints 
+%           obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
+%       end
 
+        % Reference tracking for 5.1
+        for i = 1:N-1         
+            x(:,i+1) = mpc.A*x(:,i) + mpc.B*u(i);
+            obj = obj+(x(:,i+1)-xs)'*Q*(x(:,i+1)-xs)+(u(i)-us)'*R*(u(i)-us);
+            con = [con,G*u(i)<=g];
+        end
+        
+      obj = obj+x(:,N)'*Q*x(:,N);
+      
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       
@@ -90,8 +99,7 @@ classdef MPC_Control_z < MPC_Control
     
     % Design a YALMIP optimizer object that takes a position reference
     % and returns a feasible steady-state state and input (xs, us)
-    function target_opt = setup_steady_state_target(mpc)
-      
+    function target_opt = setup_steady_state_target(mpc)  
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % INPUTS
       %   ref    - reference to track
@@ -117,7 +125,7 @@ classdef MPC_Control_z < MPC_Control
       con = [];
       G = [1;-1]; g = [0.3;0.2];
       con = [con,xs == mpc.A*xs+mpc.B*us];
-      con = [con,mpc.C*xs==ref];
+      con = [con,mpc.C*xs + d_est ==ref];    % added d_est
       con = [con,G*us<=g];
       obj = us'*us;
 
@@ -141,11 +149,19 @@ classdef MPC_Control_z < MPC_Control
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
-      
-      A_bar = [];
-      B_bar = [];
-      C_bar = [];
-      L = [];
+
+        A = mpc.A; [nA, ~] = size(A);
+        B = mpc.B; [~, nB] = size(B);
+        C = mpc.C; [nC, ~] = size(C);
+        D = mpc.D;
+        A_bar = [A, B;
+                zeros(1,nA),1];
+        B_bar = [B;zeros(1,nB)];
+        C_bar = [C,ones(nC,1)];
+
+        % the smaller the poles, the bigger the gain, the less it falls at the beginning
+        L = -place(A_bar',C_bar',[0.5,0.6,0.7])';
+%         L = -place(A_bar',C_bar',[0.01,0.02,0.03])';
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

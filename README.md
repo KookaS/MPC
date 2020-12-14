@@ -1,7 +1,11 @@
 # MPC
 EPFL project | Model Predictive Control
 
-## Git
+### Code
+
+The programm runs differently for the deliverables, make sure to uncomment the correct part in src/MPC_Control_z.m
+
+Execute then the deliverable to see the simulation.
 
 ### Generate SSH
     ssh-keygen

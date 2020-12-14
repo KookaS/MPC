@@ -40,7 +40,7 @@ classdef MPC_Control_x < MPC_Control
     g = [0.3;0.3]; 
     A = mpc.A; [nA, ~] = size(A);
     B = mpc.B; [~, nB] = size(B);
-    [K,Qf] = dlqr(A,B,eye(nA),zeros(nB)); K = -K;
+    [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
     %[Hf,hf] = Control_Invariant(H,h,G,g,A,B); This is not needed (I'll
     %explain tuesday) 
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
@@ -101,17 +101,17 @@ classdef MPC_Control_x < MPC_Control
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
-      H = [0,1,0,0;
-        0 -1, 0 0];
+        H = [0,1,0,0;
+            0 -1, 0 0];
         h = [0.035;0.035];
         G = [1;-1];
         g = [0.3;0.3]; 
-      con = [];
-      con = [con,xs == mpc.A*xs+mpc.B*us];
-      con = [con,mpc.C*xs==ref];
-      con = [con,H*xs<=h];
-      con = [con,G*us<=g];
-      obj = us'*us;
+        con = [];
+        con = [con,xs == mpc.A*xs+mpc.B*us];
+        con = [con,mpc.C*xs==ref];
+        con = [con,H*xs<=h];
+        con = [con,G*us<=g];
+        obj = us'*us;
       
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

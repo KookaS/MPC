@@ -1,3 +1,6 @@
+close all
+clear all
+clc
 %%%%%%%%%%%%%%%% Deliverable 3.1 %%%%%%%%%%%%%%%%%%%%%%%ù
 % Discretize the system 
 Ts = 1/5;
@@ -45,10 +48,14 @@ end
 %% Plots
 figure
 plot(linspace(1,simTime,simTime/Ts),xlist(4,:))
+ylabel('X position')
 figure
 plot(linspace(1,simTime,simTime/Ts),ylist(4,:))
+ylabel('Y position')
 figure
 plot(linspace(1,simTime,simTime/Ts),zlist(2,:))
+ylabel('Z position')
 figure
 plot(linspace(1,simTime,simTime/Ts),yawlist(2,:))
+ylabel('Yaw')
 

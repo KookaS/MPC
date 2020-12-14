@@ -42,7 +42,7 @@ classdef MPC_Control_y < MPC_Control
     g = [0.3;0.3]; 
     A = mpc.A; [nA, ~] = size(A);
     B = mpc.B; [~, nB] = size(B);
-    [K,Qf] = dlqr(A,B,eye(nA),zeros(nB)); K = -K;
+    [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
     %[Hf,hf] = Control_Invariant(H,h,G,g,A,B);
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
     % Compute (Choose) cost functions
