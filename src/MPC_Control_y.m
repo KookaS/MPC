@@ -46,7 +46,7 @@ classdef MPC_Control_y < MPC_Control
     %[Hf,hf] = Control_Invariant(H,h,G,g,A,B);
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
     % Compute (Choose) cost functions
-    Q = diag([1;0.2;0.65;1]); R = 0.01*eye(1);
+    Q = diag([0.01;0.05;1;100]); R = 0.1*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
@@ -64,12 +64,12 @@ classdef MPC_Control_y < MPC_Control
       % Reference tracking 
       for i = 1:N-1
       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
-      con = [con, H*x(:,i)<=h]; % State constraints
-      con = [con, G*u(i) <= g]; % Input constraints
+      con = [con, H*(x(:,i))<=h]; % State constraints
+      con = [con, G*(u(i)) <= g]; % Input constraints
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      con = [con,H*x(:,N)<=h]; % Terminal state constraints
-      obj = obj+(x(:,N)-xs)'*Q*(x(:,N)-xs);
+      con = [con,Ht*(x(:,N))<=ht]; % Terminal state constraints
+      obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs);
 
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

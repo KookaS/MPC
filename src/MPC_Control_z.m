@@ -160,8 +160,8 @@ classdef MPC_Control_z < MPC_Control
         C_bar = [C,ones(nC,1)];
 
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
-        L = -place(A_bar',C_bar',[0.5,0.6,0.7])';
-%         L = -place(A_bar',C_bar',[0.01,0.02,0.03])';
+%        L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
+         L = -place(A_bar',C_bar',[0.01,0.02,0.03])';
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
