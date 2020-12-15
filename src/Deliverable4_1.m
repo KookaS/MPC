@@ -1,3 +1,6 @@
+close all
+clear all
+clc
 %%%%%%%%%%%%%% Simulations with the nonlinear drone model %%%%%%%%%%%%%%%
 Ts = 1/5;
 quad = Quad(Ts);
