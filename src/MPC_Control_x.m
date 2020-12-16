@@ -45,7 +45,7 @@ classdef MPC_Control_x < MPC_Control
     %explain tuesday) 
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
     % Compute (Choose) cost functions
-    Q = diag([0.2;1;0.1;5]); R = 0.01*eye(1);
+    Q = diag([0.02;0.5;0.5;10]); R = 0.1*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;

@@ -22,8 +22,8 @@ mpc.yaw = MPC_Control_yaw(sys_yaw, Ts);
 %%%%%%%%%% Simulations (Linear) %%%%%%%%%%%%%%%
 %% Initializations
 x0 = [0;0;0;0];y0 = [0;0;0;0];z0 = [0;0];yaw0 = [0;0];
-xref = 2; yref = 2; zref = 2; yawref = pi/4;
-simTime = 10;
+xref = 1; yref = 1; zref = 2; yawref = pi/4;
+simTime = 3;
 Ax = sys_x_discrete.A; Bx = sys_x_discrete.B;
 Ay = sys_y_discrete.A; By = sys_y_discrete.B;
 Az = sys_z_discrete.A; Bz = sys_z_discrete.B;

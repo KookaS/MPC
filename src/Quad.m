@@ -59,7 +59,7 @@ classdef Quad
       sim.x = zeros(12,1);
       sim.z_hat = zeros(3,1); % Offset free for z-dimension
       Ts = quad.Ts;
-      Tf = 5;
+      Tf = 40;
       
       if nargin >= 3
         ctrl = quad.merge_controllers(ctrl_x, ctrl_y, ctrl_z, ctrl_yaw);
