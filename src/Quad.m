@@ -443,7 +443,7 @@ classdef Quad
       
       if isfield(sim, 'ref')
         ref = [sim.ref];
-        plot3(ref(1,:), ref(2,:), ref(3,:), 'color', 0.7*[1 1 1], 'linewidth', 2);
+        plot3(ref(1,:), ref(2,:), ref(3,:),'color', 0.7*[1 1 1], 'linewidth', 2);
       end
       
       % We plot Nplots quads along the path

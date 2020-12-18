@@ -61,7 +61,8 @@ classdef MPC_Control_yaw < MPC_Control
       con = [con, G*u(i) <= g]; % Input constraints 
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      obj = obj+x(:,N)'*Q*x(:,N);
+      obj = obj+x(:,N)'*Qf*x(:,N);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
       
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

@@ -20,7 +20,7 @@ classdef MPC_Control_x < MPC_Control
       us = sdpvar(m, 1);
       
       % SET THE HORIZON HERE
-      N = 20;
+      N = 25;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -45,7 +45,7 @@ classdef MPC_Control_x < MPC_Control
     %explain tuesday) 
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
     % Compute (Choose) cost functions
-    Q = diag([0.02;0.5;0.5;10]); R = 0.1*eye(1);
+    Q = diag([0.1;0.5;1;10]); R = 0.1*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
@@ -66,8 +66,8 @@ classdef MPC_Control_x < MPC_Control
       con = [con, G*u(i) <= g]; % Input constraints
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      con = [con,H*x(:,N)<=h]; % Terminal state constraints
-      obj = obj+(x(:,N)-xs)'*Q*(x(:,N)-xs);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+      obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs);
       
            
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
