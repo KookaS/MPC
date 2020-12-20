@@ -83,15 +83,15 @@ classdef MPC_Control_z < MPC_Control
 %           obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
 %       end
 %       obj = obj+x(:,N)'*Qf*x(:,N);
-      %con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+%       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
         % Reference tracking for 5.1
         for i = 1:N-1
           con = [con, mpc.A*x(:,i)+mpc.B*u(i)+mpc.B*d_est ==  x(:,i+1)]; % System dynamics
           con = [con, G*u(i) <= g]; % Input constraints
           obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
         end
-
       obj = obj+x(:,N)'*Q*x(:,N);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,7 +170,6 @@ classdef MPC_Control_z < MPC_Control
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
 %        L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
          L = -place(A_bar',C_bar',[0.05,0.06,0.07])';
-        display('Setting up estimator')
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
