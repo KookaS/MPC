@@ -168,7 +168,7 @@ classdef MPC_Control_z < MPC_Control
         C_bar = [C,zeros(nC,1)];
 
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
-%        L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
+ %       L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
          L = -place(A_bar',C_bar',[0.05,0.06,0.07])';
         display('Setting up estimator')
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
