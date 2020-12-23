@@ -32,21 +32,26 @@ classdef MPC_Control_x < MPC_Control
 
       % NOTE: The matrices mpc.A, mpc.B, mpc.C and mpc.D are 
       %       the DISCRETE-TIME MODEL of your system
-    % Compute invariant sets
-    H = [0,1,0,0;
-    0 -1, 0 0];
-    h = [0.035;0.035];
-    G = [1;-1];
+    % Compute invariant terminal sets
+    
+    % State Constraints
+    H = [0,1,0,0; % alpha_dot, alpha, x_dot, x
+        0 -1, 0 0];
+    h = [0.035;0.035]; % Constraints on alpha
+    % Input Constraints
+    G = [1;-1]; 
     g = [0.3;0.3]; 
+    %System and LQR-Controller
     A = mpc.A; [nA, ~] = size(A);
     B = mpc.B; [~, nB] = size(B);
     [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-    %[Hf,hf] = Control_Invariant(H,h,G,g,A,B); This is not needed (I'll
-    %explain tuesday) 
+    % Calculate Terminal invariant set
     [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+    
     % Compute (Choose) cost functions
     Q = diag([0.1;0.5;1;10]); R = 0.1*eye(1);
-      % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
+      
+    % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
       % Regulation to origin
