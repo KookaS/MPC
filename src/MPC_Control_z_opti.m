@@ -1,11 +1,11 @@
-classdef MPC_Control_z < MPC_Control
+classdef MPC_Control_z_opti < MPC_Control
   properties
     A_bar, B_bar, C_bar % Augmented system for disturbance rejection
     L                   % Estimator gain for disturbance rejection
   end
 
   methods
-    function mpc = MPC_Control_z(sys, Ts)
+    function mpc = MPC_Control_z_opti(sys, Ts)
       %display('supposed to update here')
       mpc = mpc@MPC_Control(sys, Ts);
       % Setting up estimator
@@ -59,7 +59,10 @@ classdef MPC_Control_z < MPC_Control
       H = [0,0];
       h = 0;
       % Compute (Choose) cost functions
-      Q = diag([0.5;10]); R = 0.1*eye(1);
+      load('Q_z.mat')
+      load('R_z.mat')
+      Q = Q_z; 
+      R = R_z;
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
