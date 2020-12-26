@@ -59,7 +59,7 @@ classdef MPC_Control_z < MPC_Control
       H = [0,0];
       h = 0;
       % Compute (Choose) cost functions
-      Q = diag([0.5;10]); R = 0.1*eye(1);
+      Q = diag([0.5;5]); R = 0.1*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
@@ -90,7 +90,7 @@ classdef MPC_Control_z < MPC_Control
           con = [con, G*u(i) <= g]; % Input constraints
           obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
         end
-      obj = obj+x(:,N)'*Q*x(:,N);
+      obj = obj+x(:,N)'*Qf*x(:,N);
       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE

@@ -2,7 +2,7 @@
 function [ctrl, traj] = ctrl_NMPC(quad)
 import casadi.*
 opti = casadi.Opti(); % Optimization problem
-N = 20; % MPC horizon [SET THIS VARIABLE]
+N = 30; % MPC horizon [SET THIS VARIABLE]
 % ???? decision variables ?????????
 X = opti.variable(12,N+1); % state trajectory variables
 U = opti.variable(4, N); % control trajectory (throttle, brake)
