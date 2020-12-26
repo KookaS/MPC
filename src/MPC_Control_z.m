@@ -67,7 +67,7 @@ classdef MPC_Control_z < MPC_Control
         B = mpc.B; [~, nB] = size(B);
       % Regulation to the origin for 3.1
        [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'z');
 %       for i = 1:N-1
 %       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
 %       con = [con, G*u(i) <= g]; % Input constraints

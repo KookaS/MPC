@@ -46,7 +46,7 @@ classdef MPC_Control_x < MPC_Control
     B = mpc.B; [~, nB] = size(B);
     [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
     % Calculate Terminal invariant set
-    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'x');
     
     % Compute (Choose) cost functions
     Q = diag([0.1;0.5;1;10]); R = 0.1*eye(1);

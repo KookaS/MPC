@@ -53,28 +53,28 @@ end
 % Plots
 
 subplot(2,2,1) , hold on, grid on
-plot(linspace(1,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
 ylabel('X position in [m]')
 xlabel('Time in [s]')
 title('Deliv. 3-1 X-Position over Time')
 
 subplot(2,2,2), hold on, grid on
-plot(linspace(1,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
 ylabel('Y position in [m]')
 xlabel('Time in [s]')
 title('Deliv. 3-1 Y-Position over Time')
 
 subplot(2,2,3), hold on, grid on
-plot(linspace(1,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
 ylabel('Z position in [m]')
 xlabel('Time in [s]')
 title('Deliv. 3-1 Z-Position over Time')
 
 subplot(2,2,4), hold on, grid on
-plot(linspace(1,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
 ylabel('Yaw in Degree')
 xlabel('Time in [s]')
