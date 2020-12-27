@@ -114,24 +114,28 @@ end
 subplot(2,2,1)
 plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 2', ...
     'LineWidth', 2)
+axis padded
 legend show
 
 
 subplot(2,2,2)
 plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 2', ...
     'LineWidth', 2)
+axis padded
 legend show
 
 
 subplot(2,2,3)
 plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 2', ...
     'LineWidth', 2)
+axis padded
 legend show
 
 
 subplot(2,2,4)
 plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 2', ...
     'LineWidth', 2)
+axis padded
 legend show
 
 saveas(gcf, 'Deliverable3_1_case12.png')

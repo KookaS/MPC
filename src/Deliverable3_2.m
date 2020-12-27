@@ -22,8 +22,8 @@ mpc.yaw = MPC_Control_yaw(sys_yaw, Ts);
 %%%%%%%%%% Simulations (Linear) %%%%%%%%%%%%%%%
 %% Initializations
 x0 = [0;0;0;0];y0 = [0;0;0;0];z0 = [0;0];yaw0 = [0;0];
-xref = 1; yref = 1; zref = 2; yawref = pi/4;
-simTime = 3;
+xref = -2; yref = -2; zref = -2; yawref = pi/4;
+simTime = 10;
 Ax = sys_x_discrete.A; Bx = sys_x_discrete.B;
 Ay = sys_y_discrete.A; By = sys_y_discrete.B;
 Az = sys_z_discrete.A; Bz = sys_z_discrete.B;
@@ -44,16 +44,44 @@ for k = 1:simTime/Ts
     xlist = [xlist,xNext];ylist = [ylist,yNext];zlist = [zlist,zNext];yawlist = [yawlist,yawNext];
 end
 %% Plots
-figure
-plot(linspace(1,simTime,simTime/Ts),xlist(4,:))
-ylabel('X position')
-figure
-plot(linspace(1,simTime,simTime/Ts),ylist(4,:))
-ylabel('Y position')
-figure
-plot(linspace(1,simTime,simTime/Ts),zlist(2,:))
-ylabel('Z position')
-figure
-plot(linspace(1,simTime,simTime/Ts),yawlist(2,:))
-ylabel('Yaw')
+
+
+subplot(2,2,1) , hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 1', ...
+    'LineWidth', 2)
+ylabel('X position in [m]')
+xlabel('Time in [s]')
+title('Deliv. 3-2 X-Position over Time')
+axis padded
+legend show
+
+subplot(2,2,2), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 1', ...
+    'LineWidth', 2)
+ylabel('Y position in [m]')
+xlabel('Time in [s]')
+title('Deliv. 3-2 Y-Position over Time')
+axis padded
+legend show
+
+subplot(2,2,3), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 1', ...
+    'LineWidth', 2)
+ylabel('Z position in [m]')
+xlabel('Time in [s]')
+title('Deliv. 3-2 Z-Position over Time')
+axis padded
+legend show
+
+subplot(2,2,4), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 1', ...
+    'LineWidth', 2)
+ylabel('Yaw in Degree')
+xlabel('Time in [s]')
+title('Deliv. 3-2 Yaw-Angle over Time')
+axis padded
+legend show
+legend('Location', 'southeast')
+
+saveas(gcf, 'Deliverable3_2_case1.png')
 
