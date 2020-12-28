@@ -14,10 +14,10 @@ sys_z_discrete = c2d(sys_z,Ts);
 sys_yaw_discrete = c2d(sys_yaw,Ts);
 
 %% Design MPC controllers
-mpc.x = MPC_Control_x(sys_x, Ts);
-mpc.y = MPC_Control_y(sys_y, Ts);
-mpc.z = MPC_Control_z(sys_z, Ts);
-mpc.yaw = MPC_Control_yaw(sys_yaw, Ts);
+mpc_x = MPC_Control_x(sys_x, Ts);
+mpc_y = MPC_Control_y(sys_y, Ts);
+mpc_z = MPC_Control_z(sys_z, Ts);
+mpc_yaw = MPC_Control_yaw(sys_yaw, Ts);
 
 %%%%%%%%%% Simulations (Linear) %%%%%%%%%%%%%%%
 %% Initializations
@@ -33,10 +33,10 @@ xlist = [];ylist = [];zlist = [];yawlist = [];
 
 %% Simulation
 for k = 1:simTime/Ts
-    ux = mpc.x.get_u(xNext,xref);
-    uy = mpc.y.get_u(yNext,yref);
-    uz = mpc.z.get_u(zNext,zref);
-    uyaw = mpc.yaw.get_u(yawNext,yawref);
+    ux = mpc_x.get_u(xNext,xref);
+    uy = mpc_y.get_u(yNext,yref);
+    uz = mpc_z.get_u(zNext,zref);
+    uyaw = mpc_yaw.get_u(yawNext,yawref);
     xNext = Ax*xNext+Bx*ux;
     yNext = Ay*yNext+By*uy;
     zNext = Az*zNext+Bz*uz;

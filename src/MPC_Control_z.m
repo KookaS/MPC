@@ -59,7 +59,7 @@ classdef MPC_Control_z < MPC_Control
       H = [0,0];
       h = 0;
       % Compute (Choose) cost functions
-      Q = diag([0.5;10]); R = 0.1*eye(1);
+      Q = diag([0.1;1000]); R = 0.001*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;

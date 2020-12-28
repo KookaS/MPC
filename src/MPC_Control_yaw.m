@@ -43,7 +43,7 @@ classdef MPC_Control_yaw < MPC_Control
       [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'yaw');
       % Compute (Choose) cost functions
-      Q = diag([1;10]); R = 0.01*eye(1); 
+      Q = diag([0.1;1000]); R = 0.001*eye(1); 
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
