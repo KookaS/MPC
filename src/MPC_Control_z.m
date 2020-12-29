@@ -38,7 +38,7 @@ classdef MPC_Control_z < MPC_Control
       % Setting up estimator
       [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
       % SET THE HORIZON HERE
-      N = 20;
+      N = 30;
 
       % Predicted state and input trajectories
       x = sdpvar(n, N);
