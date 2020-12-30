@@ -157,18 +157,23 @@ classdef MPC_Control_z < MPC_Control
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
 
-        A = mpc.A; [nA, ~] = size(A);
+        A = mpc.A; [~, nA] = size(A);
         B = mpc.B; [~, nB] = size(B);
-        C = mpc.C; [nC, ~] = size(C);
+        C = mpc.C; [~, nC] = size(C);
         D = mpc.D;
         Bd = B;
         A_bar = [A, Bd;
-                zeros(1,nA),1];
-        B_bar = [B;zeros(1,nB)];
-        C_bar = [C,zeros(nC,1)];
-
+                zeros(1,nA),ones(1,nB)]; % 1 row since disturbance is scalar
+        B_bar = [B; zeros(1,nB)]; % 1 row since disturbance is scalar
+        C_bar = [C, zeros(1,1)]; % (1,1) since disturbance is scalar
+        
+        if rank([A-diag([1,1]), B; C, zeros(1,nB)]) < 3 % full collum rank ...
+            %of matrix
+            
+            error('Augmented System is not Observable')
+            
+        end
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
-%        L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
          L = -place(A_bar',C_bar',[0.05,0.06,0.07])';
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
