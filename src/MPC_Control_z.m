@@ -38,7 +38,7 @@ classdef MPC_Control_z < MPC_Control
       % Setting up estimator
       [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
       % SET THE HORIZON HERE
-      N = 20;
+      N = 30;
 
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -67,7 +67,7 @@ classdef MPC_Control_z < MPC_Control
         B = mpc.B; [~, nB] = size(B);
       % Regulation to the origin for 3.1
        [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'z');
 %       for i = 1:N-1
 %       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
 %       con = [con, G*u(i) <= g]; % Input constraints
@@ -157,18 +157,23 @@ classdef MPC_Control_z < MPC_Control
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
 
-        A = mpc.A; [nA, ~] = size(A);
+        A = mpc.A; [~, nA] = size(A);
         B = mpc.B; [~, nB] = size(B);
-        C = mpc.C; [nC, ~] = size(C);
+        C = mpc.C; [~, nC] = size(C);
         D = mpc.D;
         Bd = B;
         A_bar = [A, Bd;
-                zeros(1,nA),1];
-        B_bar = [B;zeros(1,nB)];
-        C_bar = [C,zeros(nC,1)];
-
+                zeros(1,nA),ones(1,nB)]; % 1 row since disturbance is scalar
+        B_bar = [B; zeros(1,nB)]; % 1 row since disturbance is scalar
+        C_bar = [C, zeros(1,1)]; % (1,1) since disturbance is scalar
+        
+        if rank([A-diag([1,1]), B; C, zeros(1,nB)]) < 3 % full collum rank ...
+            %of matrix
+            
+            error('Augmented System is not Observable')
+            
+        end
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
- %       L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
          L = -place(A_bar',C_bar',[0.05,0.06,0.07])';
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

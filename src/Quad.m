@@ -401,14 +401,14 @@ classdef Quad
       hold on; grid on
       plot([sim.t], [sim.theta]*180/pi, 'o-');
       title('Angles')
-      legend('Roll', 'Pitch', 'Yaw');
+      legend('Roll', 'Pitch', 'Yaw', 'Orientation', 'horizontal');
       ylabel('Degrees');
       
       if isfield(sim, 'u')
         subplot(2,2,2);
         plot([sim.t], [sim.u], 's-');
         title('Thrust')
-        legend('u1', 'u2', 'u3', 'u4');
+        legend('u1', 'u2', 'u3', 'u4', 'Orientation', 'horizontal');
       end
       
       subplot(2,2,3);
@@ -417,7 +417,8 @@ classdef Quad
       %       plot([0,max([sim.t])], [-0.25,-0.25], 'k-', 'linewidth', 2);
       %       plot([0,max([sim.t])], [ 0.25, 0.25], 'k-', 'linewidth', 2);
       title('Linear velocity')
-      legend('Velocity x', 'Velocity y', 'Velocity z');
+      legend('Velocity x', 'Velocity y', 'Velocity z', 'Orientation', ...
+          'horizontal');
       
       subplot(2,2,4);
       hold on; grid on
@@ -428,11 +429,15 @@ classdef Quad
       title('Position')
       if isfield(sim, 'ref')
         legend('x', 'y', 'z', ...
-          'Reference x', 'Reference y', 'Reference z');
+          'Reference x', 'Reference y', 'Reference z', 'Location', ...
+          'northwest');
       else
-        legend('x', 'y', 'z');
+        legend('x', 'y', 'z', 'Location', 'northwest');
       end
       
+      set(gcf, 'units', 'normalized', 'Position', [0 0 1 1]) % fullscreen ... 
+      % for the figure
+            
       figure(2);
       clf; view(3);
       hold on; grid on;
@@ -455,6 +460,14 @@ classdef Quad
       end
       axis equal
       axis vis3d
+      
+      % Added manually to the Matlab Code
+      xlabel('x-Position')
+      ylabel('y-Position')
+      zlabel('z-Position')
+      set(gcf, 'units', 'normalized', 'Position', [0 0 1 1]) % fullscreen ... 
+      % for the figure
+
     end
     
     
