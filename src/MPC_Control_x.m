@@ -20,7 +20,7 @@ classdef MPC_Control_x < MPC_Control
       us = sdpvar(m, 1);
       
       % SET THE HORIZON HERE
-      N = 20;
+      N = 30;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -32,21 +32,26 @@ classdef MPC_Control_x < MPC_Control
 
       % NOTE: The matrices mpc.A, mpc.B, mpc.C and mpc.D are 
       %       the DISCRETE-TIME MODEL of your system
-    % Compute invariant sets
-    H = [0,1,0,0;
-    0 -1, 0 0];
-    h = [0.035;0.035];
-    G = [1;-1];
+    % Compute invariant terminal sets
+    
+    % State Constraints
+    H = [0,1,0,0; % alpha_dot, alpha, x_dot, x
+        0 -1, 0 0];
+    h = [0.035;0.035]; % Constraints on alpha
+    % Input Constraints
+    G = [1;-1]; 
     g = [0.3;0.3]; 
+    %System and LQR-Controller
     A = mpc.A; [nA, ~] = size(A);
     B = mpc.B; [~, nB] = size(B);
     [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-    %[Hf,hf] = Control_Invariant(H,h,G,g,A,B); This is not needed (I'll
-    %explain tuesday) 
-    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+    % Calculate Terminal invariant set
+    [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'x');
+    
     % Compute (Choose) cost functions
-    Q = diag([0.2;1;0.1;5]); R = 0.01*eye(1);
-      % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
+    Q = diag([0.1;0.5;1;10]); R = 0.1*eye(1);
+      
+    % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
       % Regulation to origin
@@ -66,8 +71,8 @@ classdef MPC_Control_x < MPC_Control
       con = [con, G*u(i) <= g]; % Input constraints
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      con = [con,H*x(:,N)<=h]; % Terminal state constraints
-      obj = obj+(x(:,N)-xs)'*Q*(x(:,N)-xs);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
+      obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs);
       
            
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

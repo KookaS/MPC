@@ -20,7 +20,7 @@ classdef MPC_Control_yaw < MPC_Control
       us = sdpvar(m, 1);
       
       % SET THE HORIZON HERE
-      N = 20;
+      N = 30;
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -41,7 +41,7 @@ classdef MPC_Control_yaw < MPC_Control
       A = mpc.A; [nA, ~] = size(A);
       B = mpc.B; [~, nB] = size(B);
       [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-      [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+      [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'yaw');
       % Compute (Choose) cost functions
       Q = diag([1;10]); R = 0.01*eye(1); 
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
@@ -61,7 +61,8 @@ classdef MPC_Control_yaw < MPC_Control
       con = [con, G*u(i) <= g]; % Input constraints 
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
-      obj = obj+x(:,N)'*Q*x(:,N);
+      obj = obj+x(:,N)'*Qf*x(:,N);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
       
       
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 

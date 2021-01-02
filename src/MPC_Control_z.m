@@ -6,10 +6,12 @@ classdef MPC_Control_z < MPC_Control
 
   methods
     function mpc = MPC_Control_z(sys, Ts)
-      display('supposed to update here')
+      %display('supposed to update here')
       mpc = mpc@MPC_Control(sys, Ts);
-      display('supposed to update here')
+      % Setting up estimator
       [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
+      %display('supposed to update here')
+
     end
 
     % Design a YALMIP optimizer object that takes a steady-state state
@@ -33,9 +35,10 @@ classdef MPC_Control_z < MPC_Control
 
       % Disturbance estimate (Ignore this before Part 5)
       d_est = sdpvar(1);
-
+      % Setting up estimator
+      [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
       % SET THE HORIZON HERE
-      N = 20;
+      N = 30;
 
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -56,14 +59,15 @@ classdef MPC_Control_z < MPC_Control
       H = [0,0];
       h = 0;
       % Compute (Choose) cost functions
-      Q = diag([0.5;10]); R = 0.1*eye(1);
+      Q = diag([1;10]); R = 0.01*eye(1);
       % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
       con = [];
       obj = 0;
-
-      % Regulation to the origin for 3.2
-%       [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
-%       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K);
+        A = mpc.A; [nA, ~] = size(A);
+        B = mpc.B; [~, nB] = size(B);
+      % Regulation to the origin for 3.1
+       [K,Qf] = dlqr(A,B,eye(nA),eye(nB)); K = -K;
+       [Ht,ht] = Terminal_Invariant(H,h,G,g,A,B,K, 'z');
 %       for i = 1:N-1
 %       con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
 %       con = [con, G*u(i) <= g]; % Input constraints
@@ -72,21 +76,22 @@ classdef MPC_Control_z < MPC_Control
 %       obj = obj+x(:,N)'*Qf*x(:,N);
 %       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
 
-      % Reference tracking for 4.1
+      % Reference tracking for 3.2
 %       for i = 1:N-1
 %           con = [con, mpc.A*x(:,i)+mpc.B*u(i) ==  x(:,i+1)]; % System dynamics
 %           con = [con, G*u(i) <= g]; % Input constraints
 %           obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
 %       end
-
+%       obj = obj+x(:,N)'*Qf*x(:,N);
+%       con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
         % Reference tracking for 5.1
         for i = 1:N-1
-            x(:,i+1) = mpc.A*x(:,i) + mpc.B*u(i);
-            obj = obj+(x(:,i+1)-xs)'*Q*(x(:,i+1)-xs)+(u(i)-us)'*R*(u(i)-us);
-            con = [con,G*u(i)<=g];
+          con = [con, mpc.A*x(:,i)+mpc.B*u(i)+mpc.B*d_est ==  x(:,i+1)]; % System dynamics
+          con = [con, G*u(i) <= g]; % Input constraints
+          obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
         end
-
       obj = obj+x(:,N)'*Q*x(:,N);
+      con = [con,Ht*x(:,N)<=ht]; % Terminal state constraints
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,14 +123,16 @@ classdef MPC_Control_z < MPC_Control
 
       % Disturbance estimate (Ignore this before Part 5)
       d_est = sdpvar(1);
-
+      % Setting up estimator
+      [mpc.A_bar, mpc.B_bar, mpc.C_bar, mpc.L] = mpc.setup_estimator();
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
       con = [];
       G = [1;-1]; g = [0.3;0.2];
-      con = [con,xs == mpc.A*xs+mpc.B*us];
-      con = [con,mpc.C*xs + d_est ==ref];    % added d_est
+      Aex = [eye(2)-mpc.A, -mpc.B;
+             mpc.C, zeros(1,1)];
+      con = [con,Aex*[xs;us] == [mpc.B*d_est;ref]];  %[zeros(2,1);ref]]; %Use commented for no offset free tracking
       con = [con,G*us<=g];
       obj = us'*us;
 
@@ -150,19 +157,24 @@ classdef MPC_Control_z < MPC_Control
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
 
-        A = mpc.A; [nA, ~] = size(A);
+        A = mpc.A; [~, nA] = size(A);
         B = mpc.B; [~, nB] = size(B);
-        C = mpc.C; [nC, ~] = size(C);
+        C = mpc.C; [~, nC] = size(C);
         D = mpc.D;
-        A_bar = [A, B;
-                zeros(1,nA),1];
-        B_bar = [B;zeros(1,nB)];
-        C_bar = [C,ones(nC,1)];
-
+        Bd = B;
+        A_bar = [A, Bd;
+                zeros(1,nA),ones(1,nB)]; % 1 row since disturbance is scalar
+        B_bar = [B; zeros(1,nB)]; % 1 row since disturbance is scalar
+        C_bar = [C, zeros(1,1)]; % (1,1) since disturbance is scalar
+        
+        if rank([A-diag([1,1]), B; C, zeros(1,nB)]) < 3 % full collum rank ...
+            %of matrix
+            
+            error('Augmented System is not Observable')
+            
+        end
         % the smaller the poles, the bigger the gain, the less it falls at the beginning
-%        L = -place(A_bar',C_bar',[0.6,0.7,0.8])';
-         L = -place(A_bar',C_bar',[0.01,0.02,0.03])';
-
+         L = -place(A_bar',C_bar',[0.05,0.06,0.07])';
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
