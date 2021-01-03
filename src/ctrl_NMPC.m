@@ -30,8 +30,9 @@ yawn = [X(3,N+1);X(6,N+1)];
 % Add constraints to optimizer
 for i=1:N
  opti.subject_to(X(:,i+1) == F(X(:,i),U(:,i))); % Dynamics
- opti.subject_to(H*X(:,i)<=h+ones(4,1)*E(i)); % State constraints
+ opti.subject_to(H*X(:,i)<=h + ones(4,1)*E(i)); % State constraints
  opti.subject_to(G*U(:,i)<=g); % Input constraints
+ opti.subject_to(E >= 0); % constraints for slack variable
 end
 % Terminal constraints
 opti.subject_to(Hfx*xn<=hfx);
@@ -52,15 +53,16 @@ for i=1:N
     cost = cost+(X(:,i)-XREF)'*Q*(X(:,i)-XREF)+U(:,i)'*R*U(:,i)+E(i)'*W*E(i);
     % Add soft constraint in optimization
 end
+
 cost = cost+(X(:,N+1)-XREF)'*Qf*(X(:,N+1)-XREF);
 opti.minimize(cost);
 
 % ---- boundary conditions --------
 opti.subject_to(X(:,1)==X0);   % use initial state
 %%%%%%%%%%%%%%%%%%%%%%%%
-ctrl = @(x,ref) eval_ctrl(x, ref, opti, X0, REF,XREF, X, U);
+ctrl = @(x,ref) eval_ctrl(x, ref, opti, X0, REF, XREF, X, U);
 end
-function u = eval_ctrl(x, ref, opti, X0, REF,XREF,X, U)
+function u = eval_ctrl(x, ref, opti, X0, REF, XREF,X, U)
 % ???? Set the initial state and reference ????
 opti.set_value(X0, x);
 opti.set_value(REF, ref);
@@ -74,8 +76,8 @@ sol = opti.solve();
 assert(sol.stats.success == 1, 'Error computing optimal input');
 u = opti.value(U(:,1));
 % Use the current solution to speed up the next optimization
-opti.set_initial(sol.value_variables());
-opti.set_initial(opti.lam_g, sol.value(opti.lam_g));
+%opti.set_initial(sol.value_variables());
+%opti.set_initial(opti.lam_g, sol.value(opti.lam_g));
 end
 
 
