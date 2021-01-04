@@ -2,7 +2,7 @@
 function [ctrl, traj] = ctrl_NMPC(quad)
 import casadi.*
 opti = casadi.Opti(); % Optimization problem
-N = 20; % MPC horizon [SET THIS VARIABLE]
+N = 30; % MPC horizon [SET THIS VARIABLE]
 % ???? decision variables ?????????
 X = opti.variable(12,N+1); % state trajectory variables
 U = opti.variable(4, N); % control trajectory (throttle, brake)
@@ -40,11 +40,11 @@ opti.subject_to(Hfy*yn<=hfy);
 opti.subject_to(Hfz*zn<=hfz);
 opti.subject_to(Hfyaw*yawn<=hfyaw);
 % Define cost function
-Qrotation = 0.1*eye(3); Qangle = 1*eye(3); Qspeed = 1*eye(3); Qposition = diag([10;10;500]);
+Qrotation = 0.1*eye(3); Qangle = 0.1*eye(3); Qspeed = 1*eye(3); Qposition = diag([10;10;500]);
 R = 10^-1*eye(4);
 Q = blkdiag(Qrotation,Qangle,Qspeed,Qposition);
 % Weight for soft constraint
-W = 100;
+W = 1000;
 % Terminal cost
 Qrotf = diag([Qfx(1);Qfy(1);Qfyaw(1)]); Qanf = diag([Qfx(2);Qfy(2);Qfyaw(2)]); Qspf = diag([Qfx(3);Qfy(3);Qfz(1)]); Qposf = diag([Qfx(4);Qfy(4);Qfz(2)]);
 Qf = blkdiag(Qrotf,Qanf,Qspf,Qposf);
