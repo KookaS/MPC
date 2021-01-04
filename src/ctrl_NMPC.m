@@ -30,21 +30,25 @@ yawn = [X(3,N+1);X(6,N+1)];
 % Add constraints to optimizer
 for i=1:N
  opti.subject_to(X(:,i+1) == F(X(:,i),U(:,i))); % Dynamics
- opti.subject_to(H*X(:,i)<=h + ones(4,1)*E(i)); % State constraints
+ opti.subject_to(H*X(:,i)<=h+ ones(4,1)*E(i)); % State constraints
  opti.subject_to(G*U(:,i)<=g); % Input constraints
  opti.subject_to(E >= 0); % constraints for slack variable
 end
 % Terminal constraints
-opti.subject_to(Hfx*xn<=hfx);
-opti.subject_to(Hfy*yn<=hfy);
-opti.subject_to(Hfz*zn<=hfz);
-opti.subject_to(Hfyaw*yawn<=hfyaw);
+opti.subject_to(H*X(:,N+1) <= h+ ones(4,1)*E(i)); % for no terminal constraints
+% opti.subject_to(Hfx*xn<=hfx);
+% opti.subject_to(Hfy*yn<=hfy);
+% opti.subject_to(Hfz*zn<=hfz);
+% opti.subject_to(Hfyaw*yawn<=hfyaw);
+
 % Define cost function
-Qrotation = 0.1*eye(3); Qangle = 0.1*eye(3); Qspeed = 1*eye(3); Qposition = diag([10;10;500]);
+Qrotation = 0.1*eye(3); Qangle = 1*eye(3); Qspeed = 1*eye(3); Qposition = diag([10;10;500]);
 R = 10^-1*eye(4);
 Q = blkdiag(Qrotation,Qangle,Qspeed,Qposition);
+
 % Weight for soft constraint
 W = 1000;
+
 % Terminal cost
 Qrotf = diag([Qfx(1);Qfy(1);Qfyaw(1)]); Qanf = diag([Qfx(2);Qfy(2);Qfyaw(2)]); Qspf = diag([Qfx(3);Qfy(3);Qfz(1)]); Qposf = diag([Qfx(4);Qfy(4);Qfz(2)]);
 Qf = blkdiag(Qrotf,Qanf,Qspf,Qposf);
@@ -53,8 +57,9 @@ for i=1:N
     cost = cost+(X(:,i)-XREF)'*Q*(X(:,i)-XREF)+U(:,i)'*R*U(:,i)+E(i)'*W*E(i);
     % Add soft constraint in optimization
 end
-
-cost = cost+(X(:,N+1)-XREF)'*Qf*(X(:,N+1)-XREF);
+cost = cost + (X(:,N+1)-XREF)'*Q*(X(:,N+1)-XREF); % for no terminal
+% constraints
+% cost = cost+(X(:,N+1)-XREF)'*Qf*(X(:,N+1)-XREF);
 opti.minimize(cost);
 
 % ---- boundary conditions --------

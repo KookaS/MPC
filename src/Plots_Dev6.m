@@ -1,11 +1,14 @@
 %% Plots for Dev 6
-close all
-clear all
-clc
+% close all
+% clear all
+% clc
 
 normal = load('Sim_normal.mat');
 
 soft = load('Sim_soft.mat');
+
+soft = load('Sim_nonTS.mat');
+
 
 time = zeros(1,40*5);
 xpos_norm = zeros(1,40*5);
