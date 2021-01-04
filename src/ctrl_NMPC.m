@@ -43,7 +43,7 @@ Qrotation = 0.1*eye(3); Qangle = 1*eye(3); Qspeed = 1*eye(3); Qposition = diag([
 R = 10^-1*eye(4);
 Q = blkdiag(Qrotation,Qangle,Qspeed,Qposition);
 % Weight for soft constraint
-W = 1000;
+W = 100;
 % Terminal cost
 Qrotf = diag([Qfx(1);Qfy(1);Qfyaw(1)]); Qanf = diag([Qfx(2);Qfy(2);Qfyaw(2)]); Qspf = diag([Qfx(3);Qfy(3);Qfz(1)]); Qposf = diag([Qfx(4);Qfy(4);Qfz(2)]);
 Qf = blkdiag(Qrotf,Qanf,Qspf,Qposf);

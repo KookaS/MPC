@@ -51,35 +51,63 @@ for k = 1:simTime/Ts
 end
 
 % Plots
+% Position
+% subplot(2,2,1) , hold on, grid on
+% plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 1', ...
+%     'LineWidth', 2)
+% ylabel('X position in [m]')
+% xlabel('Time in [s]')
+% title('Deliv. 3-1 X-Position over Time')
+% 
+% subplot(2,2,2), hold on, grid on
+% plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 1', ...
+%     'LineWidth', 2)
+% ylabel('Y position in [m]')
+% xlabel('Time in [s]')
+% title('Deliv. 3-1 Y-Position over Time')
+% 
+% subplot(2,2,3), hold on, grid on
+% plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 1', ...
+%     'LineWidth', 2)
+% ylabel('Z position in [m]')
+% xlabel('Time in [s]')
+% title('Deliv. 3-1 Z-Position over Time')
+% 
+% subplot(2,2,4), hold on, grid on
+% plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 1', ...
+%     'LineWidth', 2)
+% ylabel('Yaw in Degree')
+% xlabel('Time in [s]')
+% title('Deliv. 3-1 Yaw-Angle over Time')
 
+%Speed
 subplot(2,2,1) , hold on, grid on
-plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),xlist(3,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-ylabel('X position in [m]')
+ylabel('X speed in [m/s]')
 xlabel('Time in [s]')
-title('Deliv. 3-1 X-Position over Time')
+title('Deliv. 3-1 X-Speed over Time')
 
 subplot(2,2,2), hold on, grid on
-plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),ylist(3,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-ylabel('Y position in [m]')
+ylabel('Y speed in [m/s]')
 xlabel('Time in [s]')
-title('Deliv. 3-1 Y-Position over Time')
+title('Deliv. 3-1 Y-Speed over Time')
 
 subplot(2,2,3), hold on, grid on
-plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),zlist(1,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-ylabel('Z position in [m]')
+ylabel('Z speed in [m/s]')
 xlabel('Time in [s]')
-title('Deliv. 3-1 Z-Position over Time')
+title('Deliv. 3-1 Z-Speed over Time')
 
 subplot(2,2,4), hold on, grid on
-plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 1', ...
+plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(1,:)), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-ylabel('Yaw in Degree')
+ylabel('Yaw speed in Degrees per second')
 xlabel('Time in [s]')
-title('Deliv. 3-1 Yaw-Angle over Time')
-
+title('Deliv. 3-1 Yaw-Angular speed over Time')
 %% Initializations / Settling time of about 8 seconds
 % Case 2 
 x0 = [0;0;0;0]; % yaw 45° see task
@@ -109,33 +137,62 @@ for k = 1:simTime/Ts
     xlist = [xlist,xNext];ylist = [ylist,yNext];zlist = [zlist,zNext];yawlist = [yawlist,yawNext];
 end
 
-% Plots
+%Position Plots
 
-subplot(2,2,1)
-plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 2', ...
+% subplot(2,2,1)
+% plot(linspace(0,simTime,simTime/Ts),xlist(4,:), 'DisplayName', 'Case 2', ...
+%     'LineWidth', 2)
+% %axis padded
+% legend show
+% 
+% 
+% subplot(2,2,2)
+% plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 2', ...
+%     'LineWidth', 2)
+% %axis padded
+% legend show
+% 
+% 
+% subplot(2,2,3)
+% plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 2', ...
+%     'LineWidth', 2)
+% %axis padded
+% legend show
+% 
+% 
+% subplot(2,2,4)
+% plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 2', ...
+%     'LineWidth', 2)
+% %axis padded
+% legend show
+% saveas(gcf, 'Deliverable3_1_case12_Position.png')
+
+% Speed plots
+subplot(2,2,1) , hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),xlist(3,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-axis padded
-legend show
+ylabel('X speed in [m/s]')
+xlabel('Time in [s]')
+title('Deliv. 3-1 X-Speed over Time')
 
-
-subplot(2,2,2)
-plot(linspace(0,simTime,simTime/Ts),ylist(4,:), 'DisplayName', 'Case 2', ...
+subplot(2,2,2), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),ylist(3,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-axis padded
-legend show
+ylabel('Y speed in [m/s]')
+xlabel('Time in [s]')
+title('Deliv. 3-1 Y-Speed over Time')
 
-
-subplot(2,2,3)
-plot(linspace(0,simTime,simTime/Ts),zlist(2,:), 'DisplayName', 'Case 2', ...
+subplot(2,2,3), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),zlist(1,:), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-axis padded
-legend show
+ylabel('Z speed in [m/s]')
+xlabel('Time in [s]')
+title('Deliv. 3-1 Z-Speed over Time')
 
-
-subplot(2,2,4)
-plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(2,:)), 'DisplayName', 'Case 2', ...
+subplot(2,2,4), hold on, grid on
+plot(linspace(0,simTime,simTime/Ts),rad2deg(yawlist(1,:)), 'DisplayName', 'Case 1', ...
     'LineWidth', 2)
-axis padded
-legend show
-
-saveas(gcf, 'Deliverable3_1_case12.png')
+ylabel('Yaw speed in Degrees per second')
+xlabel('Time in [s]')
+title('Deliv. 3-1 Yaw-Angular speed over Time')
+saveas(gcf, 'Deliverable3_1_case12_Speed.png')
