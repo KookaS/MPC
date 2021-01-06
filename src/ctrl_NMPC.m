@@ -1,23 +1,26 @@
 
 function [ctrl, traj] = ctrl_NMPC(quad)
+
 import casadi.*
 opti = casadi.Opti(); % Optimization problem
 N = 30; % MPC horizon [SET THIS VARIABLE]
-% ???? decision variables ?????????
+
+%% ???? decision variables ?????????
 X = opti.variable(12,N+1); % state trajectory variables
 U = opti.variable(4, N); % control trajectory (throttle, brake)
 E = opti.variable(1,N);
 X0 = opti.parameter(12,1); % initial state
 REF = opti.parameter(4,1); % reference position [x,y,z,yaw]
 XREF = opti.parameter(12,1); % Reference state
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%%% YOUR CODE HERE %%%%
-% Create Runge Kutta function handle
+%% Create Runge Kutta function handle
 f = @(x,u) quad.f(x,u);
 h = quad.Ts;
 F = @(x,u) RK4(x,u,h,f);
 
-%  Compute constraints and add them to optimizer
+%%  Compute constraints and add them to optimizer
 H = zeros(4,12); H(1,4) = 1; H(2,4) = -1; H(3,5) = 1; H(4,5) = -1;
 h = 0.035*ones(4,1); % State constraints (only present on roll and pitch)
 G = [eye(4);-eye(4)]; 
@@ -27,21 +30,22 @@ xn = [X(1,N+1);X(4,N+1);X(7,N+1);X(10,N+1)];
 yn = [X(2,N+1);X(5,N+1);X(8,N+1);X(11,N+1)];
 zn = [X(9,N+1);X(12,N+1)];
 yawn = [X(3,N+1);X(6,N+1)];
-% Add constraints to optimizer
+
+%% Add constraints to optimizer
 for i=1:N
  opti.subject_to(X(:,i+1) == F(X(:,i),U(:,i))); % Dynamics
- opti.subject_to(H*X(:,i)<=h+ ones(4,1)*E(i)); % State constraints
+ opti.subject_to(H*X(:,i)<=h + ones(4,1)*E(i)); % State constraints
  opti.subject_to(G*U(:,i)<=g); % Input constraints
  opti.subject_to(E >= 0); % constraints for slack variable
 end
-% Terminal constraints
-opti.subject_to(H*X(:,N+1) <= h+ ones(4,1)*E(i)); % for no terminal constraints
-% opti.subject_to(Hfx*xn<=hfx);
-% opti.subject_to(Hfy*yn<=hfy);
-% opti.subject_to(Hfz*zn<=hfz);
-% opti.subject_to(Hfyaw*yawn<=hfyaw);
+% Terminal constraints // for no Terminal Set comment the following four
+% lines
+opti.subject_to(Hfx*xn<=hfx);
+opti.subject_to(Hfy*yn<=hfy);
+opti.subject_to(Hfz*zn<=hfz);
+opti.subject_to(Hfyaw*yawn<=hfyaw);
 
-% Define cost function
+%% Define cost function
 Qrotation = 0.1*eye(3); Qangle = 1*eye(3); Qspeed = 1*eye(3); Qposition = diag([10;10;500]);
 R = 10^-1*eye(4);
 Q = blkdiag(Qrotation,Qangle,Qspeed,Qposition);
@@ -57,12 +61,11 @@ for i=1:N
     cost = cost+(X(:,i)-XREF)'*Q*(X(:,i)-XREF)+U(:,i)'*R*U(:,i)+E(i)'*W*E(i);
     % Add soft constraint in optimization
 end
-cost = cost + (X(:,N+1)-XREF)'*Q*(X(:,N+1)-XREF); % for no terminal
-% constraints
-% cost = cost+(X(:,N+1)-XREF)'*Qf*(X(:,N+1)-XREF);
+% constraints // for no Terminal Set comment the following line
+cost = cost+(X(:,N+1)-XREF)'*Qf*(X(:,N+1)-XREF);
 opti.minimize(cost);
 
-% ---- boundary conditions --------
+%% ---- boundary conditions --------
 opti.subject_to(X(:,1)==X0);   % use initial state
 %%%%%%%%%%%%%%%%%%%%%%%%
 ctrl = @(x,ref) eval_ctrl(x, ref, opti, X0, REF, XREF, X, U);
