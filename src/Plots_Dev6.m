@@ -61,12 +61,12 @@ for i = 1:40*5
 end
 
 figure(1), hold on
-plot(time, xpos_norm, 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'x-Pos normal')
-plot(time, xpos_soft, 'Color', 'b', 'DisplayName', 'x-Pos soft', 'Marker', 'o')
-plot(time, ypos_norm, 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'y-Pos normal')
-plot(time, ypos_soft, 'Color', 'r', 'DisplayName', 'y-Pos soft', 'Marker', 'o')
-plot(time, zpos_norm, 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'z-Pos normal')
-plot(time, zpos_soft, 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'z-Pos soft', 'Marker', 'o')
+plot(time, xpos_norm, 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'x-Pos normal', 'LineWidth', 1.5)
+plot(time, xpos_soft, 'Color', 'b', 'DisplayName', 'x-Pos soft', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, ypos_norm, 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'y-Pos normal', 'LineWidth', 1.5)
+plot(time, ypos_soft, 'Color', 'r', 'DisplayName', 'y-Pos soft', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, zpos_norm, 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'z-Pos normal', 'LineWidth', 1.5)
+plot(time, zpos_soft, 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'z-Pos soft', 'LineWidth', 1.5) %, 'Marker', 'o')
 
 plot(time, xref, 'Color', 'k', 'DisplayName', 'x-Ref')
 plot(time, yref, 'Color', 'k', 'DisplayName', 'y-Ref')
@@ -80,12 +80,12 @@ title('Comparison of soft / normal Constraints Position')
 saveas(gcf, 'Deliverable6_Comparison_Pos.png')
 
 figure(2), hold on
-plot(time, rad2deg(roll_norm), 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'roll normal')
-plot(time, rad2deg(roll_soft), 'Color', 'b', 'DisplayName', 'roll soft', 'Marker', 'o')
-plot(time, rad2deg(pitch_norm), 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'pitch normal')
-plot(time, rad2deg(pitch_soft), 'Color', 'r', 'DisplayName', 'pitch soft', 'Marker', 'o')
-plot(time, rad2deg(yaw_norm), 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'yaw normal')
-plot(time, rad2deg(yaw_soft), 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'yaw soft', 'Marker', 'o')
+plot(time, rad2deg(roll_norm), 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'roll normal', 'LineWidth', 1.5)
+plot(time, rad2deg(roll_soft), 'Color', 'b', 'DisplayName', 'roll soft', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, rad2deg(pitch_norm), 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'pitch normal', 'LineWidth', 1.5)
+plot(time, rad2deg(pitch_soft), 'Color', 'r', 'DisplayName', 'pitch soft', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, rad2deg(yaw_norm), 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'yaw normal', 'LineWidth', 1.5)
+plot(time, rad2deg(yaw_soft), 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'yaw soft', 'LineWidth', 1.5) %, 'Marker', 'o')
 
 legend show
 ldg = legend('Location', 'northwest', 'Orientation', 'horizontal');
@@ -98,12 +98,12 @@ saveas(gcf, 'Deliverable6_Comparison_Angle.png')
 %%
 
 figure(3), hold on
-plot(time, xpos_soft, 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'x-Pos soft')
-plot(time, xpos_nonTS, 'Color', 'b', 'DisplayName', 'x-Pos no TS', 'Marker', 'o')
-plot(time, ypos_soft, 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'y-Pos soft')
-plot(time, ypos_nonTS, 'Color', 'r', 'DisplayName', 'y-Pos no TS', 'Marker', 'o')
-plot(time, zpos_soft, 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'z-Pos soft')
-plot(time, zpos_nonTS, 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'z-Pos no TS', 'Marker', 'o')
+plot(time, xpos_soft, 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'x-Pos soft', 'LineWidth', 1.5)
+plot(time, xpos_nonTS, 'Color', 'b', 'DisplayName', 'x-Pos no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, ypos_soft, 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'y-Pos soft', 'LineWidth', 1.5)
+plot(time, ypos_nonTS, 'Color', 'r', 'DisplayName', 'y-Pos no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, zpos_soft, 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'z-Pos soft', 'LineWidth', 1.5)
+plot(time, zpos_nonTS, 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'z-Pos no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
 
 plot(time, xref, 'Color', 'k', 'DisplayName', 'x-Ref')
 plot(time, yref, 'Color', 'k', 'DisplayName', 'y-Ref')
@@ -117,12 +117,12 @@ title('Comparison of no TS / soft Constraints Position')
 saveas(gcf, 'Deliverable6_Comparison_Pos_noTS.png')
 
 figure(4), hold on
-plot(time, rad2deg(roll_soft), 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'roll soft')
-plot(time, rad2deg(roll_nonTS), 'Color', 'b', 'DisplayName', 'roll no TS', 'Marker', 'o')
-plot(time, rad2deg(pitch_soft), 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'pitch soft')
-plot(time, rad2deg(pitch_nonTS), 'Color', 'r', 'DisplayName', 'pitch no TS', 'Marker', 'o')
-plot(time, rad2deg(yaw_soft), 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'yaw soft')
-plot(time, rad2deg(yaw_nonTS), 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'yaw no TS', 'Marker', 'o')
+plot(time, rad2deg(roll_soft), 'Color', 'b', 'LineStyle', '--', 'DisplayName', 'roll soft', 'LineWidth', 1.5)
+plot(time, rad2deg(roll_nonTS), 'Color', 'b', 'DisplayName', 'roll no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, rad2deg(pitch_soft), 'Color', 'r', 'LineStyle', '--', 'DisplayName', 'pitch soft', 'LineWidth', 1.5)
+plot(time, rad2deg(pitch_nonTS), 'Color', 'r', 'DisplayName', 'pitch no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
+plot(time, rad2deg(yaw_soft), 'Color', [0.9290 0.6940 0.1250], 'LineStyle', '--', 'DisplayName', 'yaw soft', 'LineWidth', 1.5)
+plot(time, rad2deg(yaw_nonTS), 'Color', [0.9290 0.6940 0.1250], 'DisplayName', 'yaw no TS', 'LineWidth', 1.5) %, 'Marker', 'o')
 
 legend show
 ldg = legend('Location', 'northwest', 'Orientation', 'horizontal');
