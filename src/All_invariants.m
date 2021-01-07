@@ -35,3 +35,6 @@ Ayaw = mpc.yaw.A; [nAyaw, ~] = size(Ayaw);
 Byaw = mpc.yaw.B; [~, nByaw] = size(Byaw);
 [Kyaw,Qfyaw] = dlqr(Ayaw,Byaw,eye(nAyaw),eye(nByaw)); Kyaw = -Kyaw;
 [Hfyaw,hfyaw] = Terminal_Invariant(Hyaw,hyaw,Gyaw,gyaw,Ayaw,Byaw,Kyaw);
+
+end
+
