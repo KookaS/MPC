@@ -16,11 +16,9 @@ quad.plot(sim);
 
 figure(1)
 saveas(gcf, 'Deliverable4_1_Figure1.png')
-
 figure(2)
 view(90,0)
-saveas(gcf, 'Deliverable4_1_Figure2_yz.png') % Added to the given ...
-% Matlab Code in order to automatically save the images
+saveas(gcf, 'Deliverable4_1_Figure2_yz.png')
 view(0,0)
 saveas(gcf, 'Deliverable4_1_Figure2_xz.png')
 view(0,90)

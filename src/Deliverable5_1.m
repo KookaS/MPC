@@ -24,7 +24,6 @@ if rank(Observability) == size(Observability,1)
     quad.plot(sim);
     
     % Plots
-    
     figure(1)
     saveas(gcf, 'Deliverable5_1_Figure1.png')
     
