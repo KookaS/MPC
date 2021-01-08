@@ -10,6 +10,7 @@ E = opti.variable(1,N);
 X0 = opti.parameter(12,1); % initial state
 REF = opti.parameter(4,1); % reference position [x,y,z,yaw]
 XREF = opti.parameter(12,1); % Reference state
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%%% YOUR CODE HERE %%%%
 % Create Runge Kutta function handle
