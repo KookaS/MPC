@@ -403,12 +403,15 @@ classdef Quad
       title('Angles')
       legend('Roll', 'Pitch', 'Yaw', 'Orientation', 'horizontal');
       ylabel('Degrees');
+      xlabel('Time in [s]')
       
       if isfield(sim, 'u')
         subplot(2,2,2);
         plot([sim.t], [sim.u], 's-');
         title('Thrust')
         legend('u1', 'u2', 'u3', 'u4', 'Orientation', 'horizontal');
+        xlabel('Time in [s]')
+        ylabel('Thrust [-]')
       end
       
       subplot(2,2,3);
@@ -419,6 +422,8 @@ classdef Quad
       title('Linear velocity')
       legend('Velocity x', 'Velocity y', 'Velocity z', 'Orientation', ...
           'horizontal');
+      xlabel('Time in [s]')
+      ylabel('Velocity in [m/s]')
       
       subplot(2,2,4);
       hold on; grid on
@@ -434,6 +439,8 @@ classdef Quad
       else
         legend('x', 'y', 'z', 'Location', 'northwest');
       end
+      xlabel('Time in [s]')
+      ylabel('Position in [m]')
       
       set(gcf, 'units', 'normalized', 'Position', [0 0 1 1]) % fullscreen ... 
       % for the figure

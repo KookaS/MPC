@@ -69,7 +69,7 @@ classdef MPC_Control_y < MPC_Control
       obj = obj+(x(:,i)-xs)'*Q*(x(:,i)-xs)+(u(i)-us)'*R*(u(i)-us);
       end
       con = [con,Ht*(x(:,N))<=ht]; % Terminal state constraints
-      obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs);
+      obj = obj+(x(:,N)-xs)'*Qf*(x(:,N)-xs); % Terminal costs
 
 
       % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
